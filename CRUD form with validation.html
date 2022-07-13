@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8"> </meta>
+	<title >HTML CRUD FORM</title>
+	<style>
+        body > table {
+  width: 80%;
+}
+
+/* table {
+  border-collapse: collapse;
+} */
+
+table list {
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid;
+  /* border: 1px solid #dddddd; */
+  background-color: aquamarine;
+  text-align: left;
+  padding: 8px;
+}
+
+/* tr:nth-child(even),table,list thead>tr{
+	background-color:#dddddd ;
+} */
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  /*width: 30%;*/
+  background-color: #ddd;
+  color: #000;
+  padding: 14px 20px;
+  margin: 8px 0;
+  /*border: none;*/
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type="submit"]:hover {
+  /*width: 30%;*/
+  background-color: green;
+  color: aliceblue;
+  cursor: pointer;
+}
+
+form div.form-action-button {
+  text-align: right;
+}
+
+a {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #0000ee;
+  margin-right: 4px;
+}
+
+label.validation-error {
+  color: red;
+  margin-left: 4px;
+}
+
+.hide {
+  display: none;
+}
+
+    </style>
+</head>
+
+<body>
+	<table>
+        <th style="text-align: center; color: darkred;font-size: 30px;">Employee Record</th>
+		<tr>
+            
+			<td>
+				<!-- html form CRUD Operation -->
+				<form onsubmit="event.preventDefault(); onformSubmit()" autocomplete="on">	
+					<div>
+						<label>Full Name</label><label class="validation-error hide" id="fullNameValidationError">This field is required</label>
+						<input type="text" name="fullName" id="fullName">
+					</div>
+					<div>
+						<label>EMP Code</label>
+						<input type="text" name="empCode" id="empCode">
+					</div>
+					<div>
+						<label>Salary</label>
+						<input type="text" name="salary" id="salary">
+					</div><div>
+						<label>City</label>
+						<input type="text" name="city" id="city">
+					</div>
+					<div>
+						<input type="submit" value="Submit" >
+					</div>
+				</form>
+			</td>
+			
+
+				<!-- Table to list all records -->
+				<table class="list" id="employeeList">
+					<thead>
+						<tr>
+							<th>Full Name</th>
+							<th>EMP Code</th>
+							<th>Salary</th>
+							<th>City</th>
+							<th>Modify</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						
+					</tbody>
+				</table>
+			
+		</tr>
+	</table>
+	
+	<script type="text/javascript" >
+        var SelectedRow=null
+
+function onformSubmit() {
+	if(validate()){
+		var formData = readFormData();
+		if(SelectedRow == null)
+			insertNewRecord(formData);
+		else
+			updateRecord(formData);
+		resetform();
+	}
+}
+
+function readFormData(){
+	var formData={};
+	formData["fullName"]=document.getElementById("fullName").value;
+	formData["empCode"]=document.getElementById("empCode").value;
+	formData["salary"]=document.getElementById("salary").value;
+	formData["city"]=document.getElementById("city").value;
+	return formData;
+}
+
+function insertNewRecord(data){
+	var table=document.getElementById("employeeList").getElementsByTagName('tbody')[0];
+	var newRow=table.insertRow(table.length);
+	cell1=newRow.insertCell(0);
+	cell1.innerHTML=data.fullName;
+	cell2=newRow.insertCell(1);
+	cell2.innerHTML=data.empCode;
+	cell3=newRow.insertCell(2);
+	cell3.innerHTML=data.salary;
+	cell4=newRow.insertCell(3);
+	cell4.innerHTML=data.city;
+	cell4=newRow.insertCell(4);
+	cell4.innerHTML=`<a onClick="onEdit(this)">Edit</a> 
+					<a onClick="onDelete(this)">Delete</a>`;	
+}
+
+function resetform(){
+	document.getElementById("fullName").value="";
+	document.getElementById("empCode").value="";
+	document.getElementById("salary").value="";
+	document.getElementById("city").value="";
+	SelectedRow=null; 
+}
+
+function onEdit(td){
+	SelectedRow= td.parentElement.parentElement;
+	document.getElementById("fullName").value= SelectedRow.cells[0].innerHTML;
+	document.getElementById("empCode").value= SelectedRow.cells[1].innerHTML;
+	document.getElementById("salary").value= SelectedRow.cells[2].innerHTML;
+	document.getElementById("city").value= SelectedRow.cells[3].innerHTML;
+}
+
+function updateRecord(formData){
+	SelectedRow.cells[0].innerHTML= formData.fullName;
+	SelectedRow.cells[1].innerHTML= formData.empCode;
+	SelectedRow.cells[2].innerHTML= formData.salary;
+	SelectedRow.cells[3].innerHTML= formData.city;
+}
+
+function onDelete(td){
+	if(confirm('Are you sure to delete this record ?')) {
+		row=td.parentElement.parentElement;
+		document.getElementById("employeeList").deleteRow(row.rowIndex);
+		resetform();
+	}
+}
+
+function validate(){
+	isValid= true;
+	if(document.getElementById("fullName").value==""){
+		isValid=false;
+		document.getElementById("fullNameValidationError").classList.remove("hide");
+	}else{
+		isValid=true;
+		if(!document.getElementById("fullNameValidationError").classList.contains("hide"))
+			document.getElementById("fullNameValidationError").classList.add("hide");;
+	}
+	return isValid;
+}
+			 
+	</script>
+	
+</body>
+
+</html>
